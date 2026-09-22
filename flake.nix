@@ -14,6 +14,7 @@
       default = pkgs.mkShell {
         packages = with pkgs; [
           wrangler
+          worker-build
           nodejs
           openssl
           pkg-config
