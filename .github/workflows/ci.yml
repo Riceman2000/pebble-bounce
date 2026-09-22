@@ -24,12 +24,16 @@ jobs:
         with:
           path: |
             ~/.cargo/bin
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
             ~/.cargo/registry/index
             ~/.cargo/registry/cache
             ~/.cargo/git/db
             target
-          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
+          # v2: earlier entries hold ~/.cargo/bin without cargo's install
+          # metadata, which makes `cargo install worker-build` fail.
+          key: cargo-v2-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-v2-${{ runner.os }}-
 
       - name: Clippy
         run: cargo clippy --target wasm32-unknown-unknown -- -D warnings
