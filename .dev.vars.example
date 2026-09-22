@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `wrangler dev`; in production set this with
+# `wrangler secret put BOUNCE_URL`. The Authorization header is taken from the
+# incoming webhook request, not from a secret.
+BOUNCE_URL = "https://example.com/hook"
