@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Build only. `wrangler deploy --dry-run` bundles the worker without contacting
+# the Cloudflare API, so no account credentials are needed or configured here.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Add wasm target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache cargo and build artifacts
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/bin
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Clippy
+        run: cargo clippy --target wasm32-unknown-unknown -- -D warnings
+
+      # Runs the [build] command from wrangler.toml (worker-build installs the
+      # nightly toolchain it needs for --panic-unwind) and bundles the result.
+      - name: Build worker
+        run: npx --yes wrangler@4.129.0 deploy --dry-run --outdir dist
