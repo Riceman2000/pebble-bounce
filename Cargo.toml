@@ -1,0 +1,13 @@
+[package]
+name = "pebble-bounce"
+version = "0.1.0"
+edition = "2021"
+authors = ["riceman2000 <alex4222000@gmail.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+worker = { version = "0.8", features = ['http'] }
+worker-macros = { version = "0.8", features = ['http'] }
+http = "1.3"
